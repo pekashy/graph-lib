@@ -45,13 +45,13 @@ TEST(EdgeCreationTest, ParamsTest)
 	auto v1 = ConcreteGraphVertex<FunnyObject>::Create(o, 1);
 	auto v2 = ConcreteGraphVertex<FunnyObject>::Create(o, 2);
 	GraphEdge e(v1, v2);
-	ASSERT_TRUE(e.m_nSource== 1);
-	ASSERT_TRUE(e.m_nDest == 2);
+	ASSERT_EQ(e.m_nSource, 1);
+	ASSERT_EQ(e.m_nDest, 2);
 }
 
 TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_Success)
 {
-	auto g = GraphFactory::CreateAdjMatrixGraph();
+	auto g = GraphFactory::CreateAdjListGraph();
 	auto* o = new FunnyObject();
 	auto v1 = ConcreteGraphVertex<FunnyObject>::Create(o, 1);
 	auto v2 = ConcreteGraphVertex<FunnyObject>::Create(o, 2);
@@ -59,11 +59,17 @@ TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_Success)
 	g->AddVertex(v1);
 	g->AddVertex(v2);
 	ASSERT_TRUE(g->AddEdge(e));
+	ASSERT_EQ(v1.get(), g->GetVertex(1).get());
+	ASSERT_EQ(v2.get(), g->GetVertex(2).get());
+	auto adj = g->GetAdjacentVertices(1);
+	ASSERT_EQ(*adj.begin(), 2);
+	auto adj2 = g->GetAdjacentVertices(2);
+	ASSERT_EQ(*adj2.begin(), 1);
 }
 
 TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_NoSource)
 {
-	auto g = GraphFactory::CreateAdjMatrixGraph();
+	auto g = GraphFactory::CreateAdjListGraph();
 	auto* o = new FunnyObject();
 	auto v1 = ConcreteGraphVertex<FunnyObject>::Create(o, 1);
 	auto v2 = ConcreteGraphVertex<FunnyObject>::Create(o, 2);
@@ -74,7 +80,7 @@ TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_NoSource)
 
 TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_NoDest)
 {
-	auto g = GraphFactory::CreateAdjMatrixGraph();
+	auto g = GraphFactory::CreateAdjListGraph();
 	auto* o = new FunnyObject();
 	auto v1 = ConcreteGraphVertex<FunnyObject>::Create(o, 1);
 	auto v2 = ConcreteGraphVertex<FunnyObject>::Create(o, 2);
