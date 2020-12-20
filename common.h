@@ -1,13 +1,13 @@
 #pragma once
 
-class ComplexGraphObject
+class ComplexObject
 {
 public:
-    virtual ~ComplexGraphObject() = default;
+    virtual ~ComplexObject() = default;
     virtual void DoObjectAction() = 0;
 };
 
-class FunnyGraphObject : public ComplexGraphObject
+class FunnyObject : public ComplexObject
 {
 public:
     void DoObjectAction() override;

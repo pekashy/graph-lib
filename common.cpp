@@ -1,12 +1,12 @@
 #include "common.h"
 #include <iostream>
 
-void FunnyGraphObject::DoObjectAction()
+void FunnyObject::DoObjectAction()
 {
 	std::cout << "Making Funny Object Action" << std::endl;
 };
 
-void FunnyGraphObject::DoFunnyAction()
+void FunnyObject::DoFunnyAction()
 {
     std::cout << "Making Funny Object Action" << std::endl;
 };

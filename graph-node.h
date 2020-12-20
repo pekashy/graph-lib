@@ -4,49 +4,57 @@
 #include "common.h"
 #include <sstream>
 
-class GraphEdge
+class GraphVertex
 {
 public:
-	virtual ~GraphEdge() = default;
-	virtual int GetSource() const = 0;
-	virtual int GetDest() const = 0;
+	using Ptr = std::shared_ptr<GraphVertex>;
+	virtual ~GraphVertex() = default;
+	virtual int GetId() const = 0;
 };
 
 template<typename T>
-class ConcreteGraphEdge : public GraphEdge
+class ConcreteGraphVertex : public GraphVertex
 {
 public:
-	virtual ~ConcreteGraphEdge() = default;
+	virtual ~ConcreteGraphVertex() = default;
 
-	int GetSource() const override
+	int GetId() const override
 	{
-		return m_nSource;
+		return m_nId;
 	}
 
-	int GetDest() const override
+	static std::shared_ptr<GraphVertex> Create(T* pContent, int nId) 
 	{
-		return m_nDest;
-	}
-
-	static std::shared_ptr<GraphEdge> Create(T* pContent, int nSource, int nDest) 
-	{
-		struct make_shared_enabler : public ConcreteGraphEdge<T> 
+		struct make_shared_enabler : public ConcreteGraphVertex<T> 
 		{
-			make_shared_enabler(T* pC, int nS, int nD) : ConcreteGraphEdge<T>(pC, nS, nD) {};
+			make_shared_enabler(T* pC, int nI) : ConcreteGraphVertex<T>(pC, nI) {};
 		};
-		return std::make_shared<make_shared_enabler>(pContent, nSource, nDest);
+		return std::make_shared<make_shared_enabler>(pContent, nId);
 	};
 
 private:
-	ConcreteGraphEdge(T* pContent, int nSource, int nDest)
+	ConcreteGraphVertex(T* pContent, int nId)
 		: m_shContent(std::make_shared<T>(*pContent))
-		, m_nSource(nSource)
+		, m_nId(nId)
+	{}
+
+	int m_nId;
+	std::shared_ptr<T> m_shContent;
+};
+
+struct GraphEdge
+{
+	GraphEdge(int nSource, int nDest)
+		: m_nSource(nSource)
 		, m_nDest(nDest)
+	{}
+
+	GraphEdge(GraphVertex::Ptr shSource, GraphVertex::Ptr shDest)
+		: GraphEdge(shSource->GetId(), shDest->GetId())
 	{}
 
 	int m_nSource;
 	int m_nDest;
-	std::shared_ptr<T> m_shContent;
 };
 
-using FunnyGraphEdge = ConcreteGraphEdge<FunnyGraphObject>;
+using FunnyGraphVertex = ConcreteGraphVertex<FunnyObject>;

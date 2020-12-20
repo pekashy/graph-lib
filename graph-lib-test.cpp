@@ -25,26 +25,62 @@ TEST(GraphCreationTest, CreateAdjListGraph)
 	ASSERT_TRUE(g.get() != nullptr);
 }
 
-TEST(EdgeCreationTest, CreateSimpleEdge)
+TEST(VertexCreationTest, CreateSimpleVertex)
 {
 	int content = 123;
-	auto e = ConcreteGraphEdge<int>::Create(&content, 0, 1);
+	auto e = ConcreteGraphVertex<int>::Create(&content, 0);
 	ASSERT_TRUE(e.get() != nullptr);
 }
 
-TEST(EdgeCreationTest, CreateComplexEdge)
+TEST(VertexCreationTest, CreateComplexVertex)
 {
-	auto* o = new FunnyGraphObject();
-	auto e = ConcreteGraphEdge<FunnyGraphObject>::Create(o, 0, 0);
+	auto* o = new FunnyObject();
+	auto e = ConcreteGraphVertex<FunnyObject>::Create(o, 0);
 	ASSERT_TRUE(e.get() != nullptr);
 }
 
 TEST(EdgeCreationTest, ParamsTest)
 {
-	auto* o = new FunnyGraphObject();
-	auto e = ConcreteGraphEdge<FunnyGraphObject>::Create(o, 1, 2);
-	ASSERT_TRUE(e->GetSource() == 1);
-	ASSERT_TRUE(e->GetDest() == 2);
+	auto* o = new FunnyObject();
+	auto v1 = ConcreteGraphVertex<FunnyObject>::Create(o, 1);
+	auto v2 = ConcreteGraphVertex<FunnyObject>::Create(o, 2);
+	GraphEdge e(v1, v2);
+	ASSERT_TRUE(e.m_nSource== 1);
+	ASSERT_TRUE(e.m_nDest == 2);
+}
+
+TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_Success)
+{
+	auto g = GraphFactory::CreateAdjMatrixGraph();
+	auto* o = new FunnyObject();
+	auto v1 = ConcreteGraphVertex<FunnyObject>::Create(o, 1);
+	auto v2 = ConcreteGraphVertex<FunnyObject>::Create(o, 2);
+	GraphEdge e(v1, v2);
+	g->AddVertex(v1);
+	g->AddVertex(v2);
+	ASSERT_TRUE(g->AddEdge(e));
+}
+
+TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_NoSource)
+{
+	auto g = GraphFactory::CreateAdjMatrixGraph();
+	auto* o = new FunnyObject();
+	auto v1 = ConcreteGraphVertex<FunnyObject>::Create(o, 1);
+	auto v2 = ConcreteGraphVertex<FunnyObject>::Create(o, 2);
+	GraphEdge e(v1, v2);
+	g->AddVertex(v2);
+	ASSERT_FALSE(g->AddEdge(e));
+}
+
+TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_NoDest)
+{
+	auto g = GraphFactory::CreateAdjMatrixGraph();
+	auto* o = new FunnyObject();
+	auto v1 = ConcreteGraphVertex<FunnyObject>::Create(o, 1);
+	auto v2 = ConcreteGraphVertex<FunnyObject>::Create(o, 2);
+	GraphEdge e(v1, v2);
+	g->AddVertex(v1);
+	ASSERT_FALSE(g->AddEdge(e));
 }
 
 int main(int argc, char **argv)

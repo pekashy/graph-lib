@@ -7,7 +7,8 @@
 class Graph
 {
 public:
-	virtual void AddEdge(const GraphEdge& edge) = 0;
+	virtual void AddVertex(GraphVertex::Ptr shVertex) = 0;
+	virtual bool AddEdge(const GraphEdge& edge) = 0;
 	virtual void PrintTest() = 0;
 	virtual ~Graph() = default;
 protected:
