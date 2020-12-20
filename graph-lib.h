@@ -7,6 +7,7 @@ class Graph
 {
 public:
 	using AdjStorageType = std::set<int>;
+	using Ptr = std::shared_ptr<Graph>;
 
 	virtual void AddVertex(GraphVertex::Ptr shVertex) = 0;
 	virtual bool AddEdge(const GraphEdge& edge) = 0;
@@ -20,7 +21,7 @@ protected:
 
 namespace GraphFactory
 {
-	std::shared_ptr<Graph> CreateAdjMatrixGraph(); // TBD
-	std::shared_ptr<Graph> CreateAdjListGraph();
-	std::shared_ptr<Graph> CreatePointerStructGraph(); // TBD
+	Graph::Ptr CreateAdjMatrixGraph(); // TBD
+	Graph::Ptr CreateAdjListGraph();
+	Graph::Ptr CreatePointerStructGraph(); // TBD
 };

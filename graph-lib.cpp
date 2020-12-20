@@ -44,6 +44,7 @@ namespace
 void AdjListGraph::AddVertex(GraphVertex::Ptr shVertex)
 {
 	m_Vertices[shVertex->GetId()] = shVertex;
+	m_adjListMap[shVertex->GetId()];
 }
 
 bool AdjListGraph::AddEdge(const GraphEdge& edge)
@@ -75,23 +76,23 @@ const AdjListGraph::AdjStorageType& AdjListGraph::GetAdjacentVertices(int Id)
 	auto adjListIt = m_adjListMap.find(Id);
 	if(adjListIt == end(m_adjListMap))
 	{
-		std::cout << "Vertex with given ID not present in graph\n";
+		std::cout << "Vertex with given ID " << Id << " not present in graph\n";
 		return m_EmptyAdjList;
 	}
 	return adjListIt->second;
 }
 
-std::shared_ptr<Graph> GraphFactory::CreateAdjMatrixGraph()
+Graph::Ptr GraphFactory::CreateAdjMatrixGraph()
 {
 	return std::make_shared<AdjMatrixGraph>();
 }
 
-std::shared_ptr<Graph> GraphFactory::CreateAdjListGraph()
+Graph::Ptr GraphFactory::CreateAdjListGraph()
 {
 	return std::make_shared<AdjListGraph>();
 }
 
-std::shared_ptr<Graph> GraphFactory::CreatePointerStructGraph()
+Graph::Ptr GraphFactory::CreatePointerStructGraph()
 {
 	return std::make_shared<PointerStructGraph>();
 }
