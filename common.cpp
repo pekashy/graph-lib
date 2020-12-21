@@ -1,14 +1,14 @@
 #include "common.h"
 #include <iostream>
 
-void FunnyObject::DoObjectAction()
+void FunnyObject::Execute()
 {
-	std::cout << "Making Generic Object Action" << std::endl;
+	std::cout << "Making Generic Object Action (Ready for Composite Pattern)" << std::endl;
 };
 
-void SadObject::DoObjectAction()
+void SadObject::Execute()
 {
-	std::cout << "Making Generic Object Action" << std::endl;
+	std::cout << "Making Generic Object Action (Ready for Composite Pattern)" << std::endl;
 };
 
 

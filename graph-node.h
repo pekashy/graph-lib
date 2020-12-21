@@ -83,7 +83,7 @@ public:
 			val = std::make_shared<T>(temp);
 		}
 	}
-	void DoObjectAction() override {};
+	void Execute() override {};
 	void Accept(Visitor::Ptr shVisitor) const override {};
 	std::shared_ptr<T> GetValue() const {return val;};
 	std::shared_ptr<T> val;
