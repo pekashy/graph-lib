@@ -12,7 +12,7 @@ public:
 	virtual int GetId() const = 0;
 };
 
-template<typename T>
+template<typename TConcrete, typename TBase>
 class ConcreteGraphVertex : public GraphVertex
 {
 public:
@@ -23,23 +23,23 @@ public:
 		return m_nId;
 	}
 
-	static std::shared_ptr<GraphVertex> Create(T* pContent, int nId) 
+	static std::shared_ptr<GraphVertex> Create(TConcrete* pContent, int nId) 
 	{
-		struct make_shared_enabler : public ConcreteGraphVertex<T> 
+		struct make_shared_enabler : public ConcreteGraphVertex<TConcrete, TBase> 
 		{
-			make_shared_enabler(T* pC, int nI) : ConcreteGraphVertex<T>(pC, nI) {};
+			make_shared_enabler(TConcrete* pC, int nI) : ConcreteGraphVertex<TConcrete, TBase>(pC, nI) {};
 		};
 		return std::make_shared<make_shared_enabler>(pContent, nId);
 	};
 
 private:
-	ConcreteGraphVertex(T* pContent, int nId)
-		: m_shContent(std::make_shared<T>(*pContent))
+	ConcreteGraphVertex(TConcrete* pContent, int nId)
+		: m_shContent(std::make_shared<TConcrete>(*pContent))
 		, m_nId(nId)
 	{}
 
 	int m_nId;
-	std::shared_ptr<T> m_shContent;
+	std::shared_ptr<TBase> m_shContent;
 };
 
 struct GraphEdge
@@ -56,5 +56,3 @@ struct GraphEdge
 	int m_nSource;
 	int m_nDest;
 };
-
-using FunnyGraphVertex = ConcreteGraphVertex<FunnyObject>;

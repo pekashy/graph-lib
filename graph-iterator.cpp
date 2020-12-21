@@ -53,10 +53,11 @@ GraphVertex::Ptr GraphIteratorImpl::Next()
 	auto adjacentIndices = m_pGraph->GetAdjacentVertices(newVisitId);
 	for(auto& index : adjacentIndices)
 	{
-		//std::cout << index << std::endl;
 		if(m_visited.find(index) == end(m_visited))
 		{
+			//std::cout << index << " not found in visited, inserting to plan " << std::endl;
 			m_visitPlan.push(index);
+			m_visited.insert(index);
 		}
 	}
 

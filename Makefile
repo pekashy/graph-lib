@@ -4,10 +4,10 @@ CFLAGS=-I$(IDIR) -lgtest -lpthread
 
 LIBS=-lm
 ODIR = .
-_DEPS = graph-lib.h graph-node.h common.h graph-iterator.h
+_DEPS = graph-lib.h graph-node.h common.h graph-iterator.h visitors.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = graph-lib-test.o graph-lib.o common.o graph-iterator.o
+_OBJ = graph-lib-test.o graph-lib.o common.o graph-iterator.o visitors.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
