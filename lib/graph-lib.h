@@ -20,7 +20,7 @@ protected:
 
 namespace GraphFactory
 {
-	Graph::Ptr CreateAdjMatrixGraph(); // TBD
+	Graph::Ptr CreateAdjMatrixGraph();
 	Graph::Ptr CreateAdjListGraph();
-	Graph::Ptr CreatePointerStructGraph(); // TBD
+	Graph::Ptr CreatePointerStructGraph();
 };
