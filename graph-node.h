@@ -6,13 +6,14 @@
 #include <sstream>
 #include <memory>
 
-class GraphVertex
+class GraphVertex : public Chainable
 {
 public:
 	using Ptr = std::shared_ptr<GraphVertex>;
 	virtual ~GraphVertex() = default;
 	virtual int GetId() const = 0;
 	virtual void Accept(Visitor::Ptr shVisitor) = 0;
+	virtual void Execute() = 0;
 };
 
 template<typename TConcrete, typename TBase>
@@ -39,7 +40,28 @@ public:
 	{
 		return m_fAcceptFunction(shVisitor);
 	}
+
+	void Execute() override
+	{
+		return m_shContent->Execute();
+	}
 	
+	void SetNext(Chainable::Ptr shNextHandler) override
+	{
+		m_shNextInChain = shNextHandler;
+	}
+
+	void Handle(const std::function<void(void)>& fnOperation) override
+	{
+		if(m_shNextInChain == nullptr)
+		{
+			return m_shNextInChain->Handle(fnOperation);
+		}
+
+		return fnOperation();
+	}
+
+
 private:
 	ConcreteGraphVertex(TConcrete* pContent, int nId)
 		: m_nId(nId)
@@ -53,6 +75,7 @@ private:
 	int m_nId;
 	std::function<void(Visitor::Ptr)> m_fAcceptFunction;
 	std::shared_ptr<TBase> m_shContent;
+	Chainable::Ptr m_shNextInChain;
 };
 
 struct GraphEdge
@@ -87,6 +110,8 @@ public:
 	void Accept(Visitor::Ptr shVisitor) const override {};
 	std::shared_ptr<T> GetValue() const {return val;};
 	std::shared_ptr<T> val;
+	void SetNext(Chainable::Ptr shNextHandler) {}
+	void Handle(const std::function<void(void)>& fnOperation) {}
 };
 
 

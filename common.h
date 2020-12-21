@@ -3,7 +3,18 @@
 #include "visitors.h"
 #include "dispatcher.h"
 
-class ComplexObject
+#include <functional>
+
+class Chainable
+{
+public:
+	using Ptr = std::shared_ptr<Chainable>;
+	virtual ~Chainable() = default;
+	virtual void SetNext(Chainable::Ptr shNextHandler) = 0;
+	virtual void Handle(const std::function<void(void)>& fnOperation) = 0;
+};
+
+class ComplexObject : public Chainable
 {
 public:
 	using Ptr = std::shared_ptr<ComplexObject>;
@@ -19,6 +30,10 @@ public:
 	void Execute() override;
 	void DoFunnyAction() const;
 	void Accept(Visitor::Ptr shVisitor) const override;
+	void SetNext(Chainable::Ptr shNextHandler) override;
+	void Handle(const std::function<void(void)>& fnOperation) override;
+private:
+	Chainable::Ptr m_shNext;
 };
 
 class SadObject : public ComplexObject
@@ -28,6 +43,10 @@ public:
 	void Execute() override;
 	void DoSadAction() const ;
 	void Accept(Visitor::Ptr shVisitor) const override;
+	void SetNext(Chainable::Ptr shNextHandler) override;
+	void Handle(const std::function<void(void)>& fnOperation) override;
+private:
+	Chainable::Ptr m_shNext;
 };
 
 using ComplexDispatcher = VisitorDispatcher<ComplexObject, ComplexObject>;
