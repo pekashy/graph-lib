@@ -13,7 +13,6 @@ public:
 	virtual bool AddEdge(const GraphEdge& edge) = 0;
 	virtual GraphVertex::Ptr GetVertex(int Id) const = 0;
 	virtual const AdjStorageType& GetAdjacentVertices(int Id) = 0;
-	virtual void PrintTest() = 0;
 	virtual ~Graph() = default;
 protected:
 	Graph() = default;

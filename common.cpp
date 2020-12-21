@@ -38,13 +38,13 @@ void FunnyObject::SetNext(Chainable::Ptr shNextHandler)
 	m_shNext = shNextHandler;
 }
 
-void FunnyObject::Handle(const std::function<void(void)>& fnOperation)
+void FunnyObject::Handle(const std::function<void(Chainable*)>& fnOperation)
 {
 	if(m_shNext == nullptr)
 	{
 		return m_shNext->Handle(fnOperation);
 	}
-	return fnOperation();
+	return fnOperation(this);
 }
 
 void SadObject::SetNext(Chainable::Ptr shNextHandler) 
@@ -52,11 +52,11 @@ void SadObject::SetNext(Chainable::Ptr shNextHandler)
 	m_shNext = shNextHandler;
 }
 
-void SadObject::Handle(const std::function<void(void)>& fnOperation)
+void SadObject::Handle(const std::function<void(Chainable*)>& fnOperation)
 {
 	if(m_shNext == nullptr)
 	{
 		return m_shNext->Handle(fnOperation);
 	}
-	return fnOperation();
+	return fnOperation(this);
 }

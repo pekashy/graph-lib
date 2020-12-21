@@ -11,7 +11,7 @@ public:
 	using Ptr = std::shared_ptr<Chainable>;
 	virtual ~Chainable() = default;
 	virtual void SetNext(Chainable::Ptr shNextHandler) = 0;
-	virtual void Handle(const std::function<void(void)>& fnOperation) = 0;
+	virtual void Handle(const std::function<void(Chainable*)>& fnOperation) = 0;
 };
 
 class ComplexObject : public Chainable
@@ -31,7 +31,7 @@ public:
 	void DoFunnyAction() const;
 	void Accept(Visitor::Ptr shVisitor) const override;
 	void SetNext(Chainable::Ptr shNextHandler) override;
-	void Handle(const std::function<void(void)>& fnOperation) override;
+	void Handle(const std::function<void(Chainable*)>& fnOperation) override;
 private:
 	Chainable::Ptr m_shNext;
 };
@@ -44,7 +44,7 @@ public:
 	void DoSadAction() const ;
 	void Accept(Visitor::Ptr shVisitor) const override;
 	void SetNext(Chainable::Ptr shNextHandler) override;
-	void Handle(const std::function<void(void)>& fnOperation) override;
+	void Handle(const std::function<void(Chainable*)>& fnOperation) override;
 private:
 	Chainable::Ptr m_shNext;
 };

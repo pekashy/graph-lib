@@ -42,7 +42,6 @@ GraphVertex::Ptr GraphIteratorImpl::Next()
 	int newVisitId = m_visitPlan.top();
 	m_visitPlan.pop();
 	m_visited.insert(newVisitId);
-	//std::cout << newVisitId << std::endl;
 
 	auto visitingVertex = m_pGraph->GetVertex(newVisitId);
 	if(visitingVertex == nullptr)
@@ -55,7 +54,6 @@ GraphVertex::Ptr GraphIteratorImpl::Next()
 	{
 		if(m_visited.find(index) == end(m_visited))
 		{
-			//std::cout << index << " not found in visited, inserting to plan " << std::endl;
 			m_visitPlan.push(index);
 			m_visited.insert(index);
 		}

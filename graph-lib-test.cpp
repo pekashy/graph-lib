@@ -8,27 +8,6 @@
 #include <iostream>
 #include <functional>
 
-TEST(GraphCreationTest, CreateAdjMatrixGraph)
-{
-	auto g = GraphFactory::CreateAdjMatrixGraph();
-	g->PrintTest();
-	ASSERT_TRUE(g.get() != nullptr);
-}
-
-TEST(GraphCreationTest, CreatePointerStructGraph)
-{
-	auto g = GraphFactory::CreatePointerStructGraph();
-	g->PrintTest();
-	ASSERT_TRUE(g.get() != nullptr);
-}
-
-TEST(GraphCreationTest, CreateAdjListGraph)
-{
-	auto g = GraphFactory::CreateAdjListGraph();
-	g->PrintTest();
-	ASSERT_TRUE(g.get() != nullptr);
-}
-
 TEST(VertexCreationTest, CreateSimpleVertex)
 {
 	int content = 123;
@@ -163,7 +142,7 @@ TEST(GraphTraverseTest, IterateOverFourElements)
 	ASSERT_EQ(graphIt->Next(), nullptr);
 }
 
-TEST(GraphTraverseTest, IterateOverFourElements2)
+TEST(GraphTraverseTest, IterateOverFourElements2_AdjList)
 {
 	auto g = GraphFactory::CreateAdjListGraph();
 	FunnyObject* oF = new FunnyObject();
@@ -198,7 +177,44 @@ TEST(GraphTraverseTest, IterateOverFourElements2)
 	ASSERT_EQ(v2.get(), v2_recieved.get());
 	ASSERT_EQ(v3.get(), v3_recieved.get());
 	ASSERT_EQ(v4.get(), v4_recieved.get());
+	ASSERT_EQ(graphIt->Next(), nullptr);
+}
 
+TEST(GraphTraverseTest, IterateOverFourElements2_AdjMatrix)
+{
+	auto g = GraphFactory::CreateAdjListGraph();
+	FunnyObject* oF = new FunnyObject();
+	SadObject* oS = new SadObject();
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
+	auto v3 = ComplexObjVertex<FunnyObject>::Create(oF, 3);
+	auto v4 = ComplexObjVertex<SadObject>::Create(oS, 4);
+
+	GraphEdge e12(v1, v2);
+	GraphEdge e13(v1, v3);
+	GraphEdge e14(v1, v4);
+	GraphEdge e32(v3, v2);
+
+	g->AddVertex(v1);
+	g->AddVertex(v2);
+	g->AddVertex(v3);
+	g->AddVertex(v4);
+
+	g->AddEdge(e12);
+	g->AddEdge(e13);
+	g->AddEdge(e14);
+	g->AddEdge(e32);
+
+	auto graphIt = GraphIteratorFactory::CreateGraphIterator(g, 1);
+	auto v1_recieved = graphIt->Next();
+	auto v4_recieved = graphIt->Next();
+	auto v3_recieved = graphIt->Next();
+	auto v2_recieved = graphIt->Next();
+
+	ASSERT_EQ(v1.get(), v1_recieved.get());
+	ASSERT_EQ(v2.get(), v2_recieved.get());
+	ASSERT_EQ(v3.get(), v3_recieved.get());
+	ASSERT_EQ(v4.get(), v4_recieved.get());
 	ASSERT_EQ(graphIt->Next(), nullptr);
 }
 
@@ -228,7 +244,7 @@ TEST(DispatcherTest, TestDispatchTest)
 }
 
 
-TEST(VisitorsTest, SmartDummyVisitorsTest)
+TEST(VisitorsTest, SmartDummyVisitorsTest_AdjListGraph)
 {
 	auto g = GraphFactory::CreateAdjListGraph();
 	FunnyObject* oF = new FunnyObject();
@@ -260,12 +276,62 @@ TEST(VisitorsTest, SmartDummyVisitorsTest)
 	auto v3_recieved = graphIt->Next();
 	auto v2_recieved = graphIt->Next();
 
+	ASSERT_EQ(v1.get(), v1_recieved.get());
+	ASSERT_EQ(v2.get(), v2_recieved.get());
+	ASSERT_EQ(v3.get(), v3_recieved.get());
+	ASSERT_EQ(v4.get(), v4_recieved.get());
+	ASSERT_EQ(graphIt->Next(), nullptr);
 
 	v1_recieved->Accept(cleverVisitor);
 	v4_recieved->Accept(cleverVisitor);
 	v3_recieved->Accept(cleverVisitor);
 	v2_recieved->Accept(cleverVisitor);
 }
+
+TEST(VisitorsTest, SmartDummyVisitorsTest_AdjMatrixGraph)
+{
+	auto g = GraphFactory::CreateAdjMatrixGraph();
+	FunnyObject* oF = new FunnyObject();
+	SadObject* oS = new SadObject();
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
+	auto v3 = ComplexObjVertex<FunnyObject>::Create(oF, 3);
+	auto v4 = ComplexObjVertex<SadObject>::Create(oS, 4);
+
+	GraphEdge e12(v1, v2);
+	GraphEdge e13(v1, v3);
+	GraphEdge e14(v1, v4);
+	GraphEdge e32(v3, v2);
+
+	g->AddVertex(v1);
+	g->AddVertex(v2);
+	g->AddVertex(v3);
+	g->AddVertex(v4);
+
+	g->AddEdge(e12);
+	g->AddEdge(e13);
+	g->AddEdge(e14);
+	g->AddEdge(e32);
+
+	auto cleverVisitor = VisitorFactory::CreateCleverVisitor();
+	auto graphIt = GraphIteratorFactory::CreateGraphIterator(g, 1);
+	auto v1_recieved = graphIt->Next();
+	auto v4_recieved = graphIt->Next();
+	auto v3_recieved = graphIt->Next();
+	auto v2_recieved = graphIt->Next();
+
+	ASSERT_EQ(v1.get(), v1_recieved.get());
+	ASSERT_EQ(v2.get(), v2_recieved.get());
+	ASSERT_EQ(v3.get(), v3_recieved.get());
+	ASSERT_EQ(v4.get(), v4_recieved.get());
+	ASSERT_EQ(graphIt->Next(), nullptr);
+
+	v1_recieved->Accept(cleverVisitor);
+	v4_recieved->Accept(cleverVisitor);
+	v3_recieved->Accept(cleverVisitor);
+	v2_recieved->Accept(cleverVisitor);
+}
+
 
 int main(int argc, char **argv)
 {

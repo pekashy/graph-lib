@@ -51,14 +51,14 @@ public:
 		m_shNextInChain = shNextHandler;
 	}
 
-	void Handle(const std::function<void(void)>& fnOperation) override
+	void Handle(const std::function<void(Chainable*)>& fnOperation) override
 	{
 		if(m_shNextInChain == nullptr)
 		{
 			return m_shNextInChain->Handle(fnOperation);
 		}
 
-		return fnOperation();
+		return fnOperation(this);
 	}
 
 
@@ -111,7 +111,7 @@ public:
 	std::shared_ptr<T> GetValue() const {return val;};
 	std::shared_ptr<T> val;
 	void SetNext(Chainable::Ptr shNextHandler) {}
-	void Handle(const std::function<void(void)>& fnOperation) {}
+	void Handle(const std::function<void(Chainable*)>& fnOperation) {}
 };
 
 
