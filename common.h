@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "visitors.h"
+#include "dispatcher.h"
 
 class ComplexObject
 {
@@ -18,7 +19,6 @@ public:
 	void DoObjectAction() override;
 	void DoFunnyAction() const;
 	void Accept(Visitor::Ptr shVisitor) const override;
-	virtual ~FunnyObject() = default;
 };
 
 class SadObject : public ComplexObject
@@ -28,5 +28,6 @@ public:
 	void DoObjectAction() override;
 	void DoSadAction() const ;
 	void Accept(Visitor::Ptr shVisitor) const override;
-	virtual ~SadObject() = default;
 };
+
+using ComplexDispatcher = VisitorDispatcher<ComplexObject, ComplexObject>;

@@ -1,9 +1,12 @@
 #include "graph-lib.h"
 #include "common.h"
 #include "graph-iterator.h"
+#include "dispatcher.h"
+#include "visitors.h"
 
 #include "gtest/gtest.h"
 #include <iostream>
+#include <functional>
 
 TEST(GraphCreationTest, CreateAdjMatrixGraph)
 {
@@ -29,14 +32,14 @@ TEST(GraphCreationTest, CreateAdjListGraph)
 TEST(VertexCreationTest, CreateSimpleVertex)
 {
 	int content = 123;
-	auto e = ConcreteGraphVertex<int, int>::Create(&content, 0);
+	auto e = SimpleObjVertex<int>::Create(&content, 0);
 	ASSERT_TRUE(e.get() != nullptr);
 }
 
 TEST(VertexCreationTest, CreateComplexVertex)
 {
 	auto* o = new FunnyObject();
-	auto e = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(o, 0);
+	auto e = ComplexObjVertex<FunnyObject>::Create(o, 0);
 	ASSERT_TRUE(e.get() != nullptr);
 }
 
@@ -45,8 +48,8 @@ TEST(EdgeCreationTest, ParamsTest)
 {
 	FunnyObject* oF = new FunnyObject();
 	SadObject* oS = new SadObject();
-	auto v1 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 1);
-	auto v2 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 2);
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
 	GraphEdge e(v1, v2);
 	ASSERT_EQ(e.m_nSource, 1);
 	ASSERT_EQ(e.m_nDest, 2);
@@ -57,8 +60,8 @@ TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_NoSource)
 	auto g = GraphFactory::CreateAdjListGraph();
 	FunnyObject* oF = new FunnyObject();
 	SadObject* oS = new SadObject();
-	auto v1 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 1);
-	auto v2 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 2);
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
 	GraphEdge e(v1, v2);
 	g->AddVertex(v2);
 	ASSERT_FALSE(g->AddEdge(e));
@@ -69,8 +72,8 @@ TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_NoDest)
 	auto g = GraphFactory::CreateAdjListGraph();
 	FunnyObject* oF = new FunnyObject();
 	SadObject* oS = new SadObject();
-	auto v1 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 1);
-	auto v2 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 2);
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
 	GraphEdge e(v1, v2);
 	g->AddVertex(v1);
 	ASSERT_FALSE(g->AddEdge(e));
@@ -81,8 +84,8 @@ TEST(EdgeInsertionTest, InsertSimpleEdgeTest_AdjMatrix_Success)
 	auto g = GraphFactory::CreateAdjListGraph();
 	FunnyObject* oF = new FunnyObject();
 	SadObject* oS = new SadObject();
-	auto v1 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 1);
-	auto v2 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 2);
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
 	GraphEdge e(v1, v2);
 	g->AddVertex(v1);
 	g->AddVertex(v2);
@@ -101,8 +104,8 @@ TEST(GraphTraverseTest, IterateOverTwoElements)
 	auto g = GraphFactory::CreateAdjListGraph();
 	FunnyObject* oF = new FunnyObject();
 	SadObject* oS = new SadObject();
-	auto v1 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 1);
-	auto v2 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 2);
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
 	GraphEdge e(v1, v2);
 	g->AddVertex(v1);
 	g->AddVertex(v2);
@@ -128,10 +131,10 @@ TEST(GraphTraverseTest, IterateOverFourElements)
 	auto g = GraphFactory::CreateAdjListGraph();
 	FunnyObject* oF = new FunnyObject();
 	SadObject* oS = new SadObject();
-	auto v1 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 1);
-	auto v2 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 2);
-	auto v3 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 3);
-	auto v4 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 4);
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
+	auto v3 = ComplexObjVertex<FunnyObject>::Create(oF, 3);
+	auto v4 = ComplexObjVertex<SadObject>::Create(oS, 4);
 
 	GraphEdge e12(v1, v2);
 	GraphEdge e23(v2, v3);
@@ -165,10 +168,10 @@ TEST(GraphTraverseTest, IterateOverFourElements2)
 	auto g = GraphFactory::CreateAdjListGraph();
 	FunnyObject* oF = new FunnyObject();
 	SadObject* oS = new SadObject();
-	auto v1 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 1);
-	auto v2 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 2);
-	auto v3 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 3);
-	auto v4 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 4);
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
+	auto v3 = ComplexObjVertex<FunnyObject>::Create(oF, 3);
+	auto v4 = ComplexObjVertex<SadObject>::Create(oS, 4);
 
 	GraphEdge e12(v1, v2);
 	GraphEdge e13(v1, v3);
@@ -199,16 +202,41 @@ TEST(GraphTraverseTest, IterateOverFourElements2)
 	ASSERT_EQ(graphIt->Next(), nullptr);
 }
 
+// Visitor can be implemented through dispatcher, but I see no point in it for now
+TEST(DispatcherTest, TestDispatchTest)
+{
+	using namespace std::placeholders;
+	FunnyObject::Ptr oF = std::make_shared<FunnyObject>();
+	SadObject::Ptr oS = std::make_shared<SadObject>();
+	std::function<void(Visitor::Ptr)> fF = std::bind(&FunnyObject::Accept, *oF, _1);
+	std::function<void(Visitor::Ptr)> fS = std::bind(&SadObject::Accept, *oS, _1);
+	VisitorDispatcher<ComplexObject> dispatcher;
+	dispatcher.add<FunnyObject>(fF);
+	dispatcher.add<SadObject>(fS);
+
+	ComplexObject::Ptr unknown_fF = oF;
+	ComplexObject::Ptr unknown_fS = oS;
+
+	auto fF2 = dispatcher.Go(unknown_fF);
+	auto fS2 = dispatcher.Go(unknown_fS);
+		
+	auto cleverVisitor = VisitorFactory::CreateCleverVisitor();
+	auto dummyVisitor = VisitorFactory::CreateDummyVisitor();
+
+	fF2(cleverVisitor);
+	fS2(dummyVisitor);
+}
+
 
 TEST(VisitorsTest, SmartDummyVisitorsTest)
 {
 	auto g = GraphFactory::CreateAdjListGraph();
 	FunnyObject* oF = new FunnyObject();
 	SadObject* oS = new SadObject();
-	auto v1 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 1);
-	auto v2 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 2);
-	auto v3 = ConcreteGraphVertex<FunnyObject, ComplexObject>::Create(oF, 3);
-	auto v4 = ConcreteGraphVertex<SadObject, ComplexObject>::Create(oS, 4);
+	auto v1 = ComplexObjVertex<FunnyObject>::Create(oF, 1);
+	auto v2 = ComplexObjVertex<SadObject>::Create(oS, 2);
+	auto v3 = ComplexObjVertex<FunnyObject>::Create(oF, 3);
+	auto v4 = ComplexObjVertex<SadObject>::Create(oS, 4);
 
 	GraphEdge e12(v1, v2);
 	GraphEdge e13(v1, v3);
@@ -233,10 +261,10 @@ TEST(VisitorsTest, SmartDummyVisitorsTest)
 	auto v2_recieved = graphIt->Next();
 
 
-	// TODO: Implement Dispatcher for visitor
-	cleverVisitor->VisitFunny(v1_recieved);
-	cleverVisitor->VisitSad(v1);
-
+	v1_recieved->Accept(cleverVisitor);
+	v4_recieved->Accept(cleverVisitor);
+	v3_recieved->Accept(cleverVisitor);
+	v2_recieved->Accept(cleverVisitor);
 }
 
 int main(int argc, char **argv)
