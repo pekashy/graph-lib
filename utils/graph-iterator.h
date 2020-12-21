@@ -1,6 +1,6 @@
 #pragma once
 
-#include "graph-lib.h"
+#include "../lib/graph-lib.h"
 
 class GraphIterator
 {

@@ -1,8 +1,8 @@
-#include "graph-lib.h"
-#include "common.h"
-#include "graph-iterator.h"
-#include "dispatcher.h"
-#include "visitors.h"
+#include "lib/graph-lib.h"
+#include "objects/common.h"
+#include "utils/graph-iterator.h"
+#include "utils/dispatcher.h"
+#include "utils/visitors.h"
 
 #include "gtest/gtest.h"
 #include <iostream>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common.h"
-#include "visitors.h"
+#include "../objects/common.h"
+#include "../utils/visitors.h"
 
 #include <sstream>
 #include <memory>
