@@ -78,19 +78,23 @@ private:
 	Chainable::Ptr m_shNextInChain;
 };
 
+
 struct GraphEdge
 {
-	GraphEdge(int nSource, int nDest)
+public:
+	GraphEdge(int nSource, int nDest, ComplexObject::Ptr shWeight = nullptr)
 		: m_nSource(nSource)
 		, m_nDest(nDest)
+		, m_shWeight(shWeight)
 	{}
 
-	GraphEdge(GraphVertex::Ptr shSource, GraphVertex::Ptr shDest)
-		: GraphEdge(shSource->GetId(), shDest->GetId())
+	GraphEdge(GraphVertex::Ptr shSource, GraphVertex::Ptr shDest, ComplexObject::Ptr shWeight = nullptr)
+		: GraphEdge(shSource->GetId(), shDest->GetId(), shWeight)
 	{}
 
 	int m_nSource;
 	int m_nDest;
+	ComplexObject::Ptr m_shWeight;
 };
 
 
